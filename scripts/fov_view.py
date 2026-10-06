@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from darknessalp import background, field, frames, geometry, orbit, pointing
+from darknessalp.constants import R_EQUATOR_KM
 
 HALF_ANGLE = 10.0
 
@@ -80,20 +81,22 @@ def main():
     a = parse_args()
     time = frames.times(a.epoch, a.t)[0]
     coeffs = field.load_igrf(float(frames.decimal_year(time)))
-    r, _ = orbit.circular_orbit(a.t, a.alt, a.inc, a.raan)
+    r0, v0 = orbit.elements_to_state(R_EQUATOR_KM + a.alt, 0.0, a.inc,
+                                     a.raan, 0.0, 0.0)
+    r, _ = orbit.propagate(r0, v0, a.t)
     n = pointing.sky_target(a.target)
     ax = fov_view(r[0], time, n, coeffs, a.extent, a.lmax)
 
     r_ecef = frames.eci_to_ecef(r, time)
     lat, lon, rad = frames.spherical(r_ecef)
     mlat = field.magnetic_latitude(r_ecef, coeffs)[0]
-    sun = frames.sun_vector(time)
+    lit = geometry.shadow(r, frames.sun_position(time))["lit_fraction"]
     ax.set_title(
         f"{a.target}  {a.epoch[:10]} +{a.t:.0f} s  lat {lat[0]:.0f} "
         f"lon {lon[0]:.0f}  maglat {mlat:.0f}  "
         f"Rc {field.cutoff_rigidity(mlat, rad[0]):.1f} GV  "
         f"limb {geometry.limb_angle(r[0], n)[0]:.0f} deg  "
-        f"umbra {bool(geometry.in_umbra(r, sun)[0])}", fontsize=9)
+        f"sunlit {lit[0]:.0%}", fontsize=9)
     if a.out:
         ax.figure.savefig(a.out, dpi=130, bbox_inches="tight")
     else:

@@ -409,7 +409,263 @@ returns as a script under `scripts/` with its own requirement line.
 
 ---
 
+## D25 - The cosmic ALP background is a source requirement, not a mission one
+
+**2026-09-23.** ALP-CH-18 to ALP-CH-22 add the primordial cosmic ALP
+background (Conlon & Marsh 2013) to the baseline requirements as a
+second isotropic source with its own normalisation. No mission-analysis
+requirement is added for it.
+
+**Why:** it converts through the same pointing-free kernel as the
+extragalactic continuum, so any schedule chosen for the continuum
+serves it. It matters only at the viability gate, as a second allowed
+benchmark bounded by the effective neutrino number, and only through
+the tail of its spectrum that reaches 1-10 keV.
+
+**Reversed if:** ALP-CH-21 shows the in-band fraction is negligible, in
+which case the five requirements are retired in one entry.
+
+**Superseded by D26** the same day, on the conversion probability
+rather than the band fraction.
+
+---
+
+## D26 - The cosmic ALP background is retired
+
+**2026-09-23.** ALP-CH-18 to ALP-CH-22 are retired and
+`source/cab.py` is removed (recoverable from git history).
+
+**Why:** the cosmic ALP background is the only source in the study
+with an absolute flux, fixed by the effective neutrino number, so
+its viability could be checked before the gate. At the CAST limit
+$g = 6.6\times10^{-11}$ GeV⁻¹ and the best reference-schedule field
+geometry ($B_\perp L = 150$ T m, $P = 2.4\times10^{-17}$), the
+converted brightness in 1–10 keV is $1.2\times10^{-14}$ of the
+diffuse X-ray background for a mean energy of 532 eV, and
+$7\times10^{-17}$ at the paper's 238 eV benchmark. The band
+fraction D25 anticipated is not what decides it; the conversion
+probability is. See [[2026-09-23-source-models]].
+
+**Consequence:** the extragalactic $\chi\to aa$ continuum converts
+through the same kernel, so it needs an in-band flux about
+$10^{14}$ times the cosmic ALP background's to reach the diffuse
+background. That is the number the viability gate tests.
+
+**Reversed if:** a detector with orders of magnitude more grasp, or
+a conversion region with orders of magnitude more $B_\perp L$, is in
+scope.
+
+---
+
+## D27 - One orbit setup: CCSDS elements, numerical gravity, GCRF
+
+**2026-09-23.** `orbit/` is one path: osculating Keplerian elements in
+the CCSDS OPM set go through `elements_to_state`, `propagate` integrates
+them with a named force model (`"point"`, `"j2"`) or any acceleration
+function, and `write_oem` / `read_oem` exchange the result as a CCSDS
+OEM (KVN). Epochs are astropy `Time`, given as ISO 8601 or a Julian
+date. The state is on GCRF axes; OEM files may be written on EME2000
+axes, converted with astropy's frame bias (23.147 mas, under 1 m in
+LEO). `circular_orbit` is removed; its secular J2 node rate is now the
+known answer the numerical propagation is tested against
+(ALP-OR-01 to 17).
+
+**Why:** a student should learn one orbit setup, and it should be the
+one real tools use. OPM elements in, OEM out means a FreeFlyer, GMAT
+or STK ephemeris can replace ours without touching the rest of the
+chain.
+
+**Pins moved.** The same initial state now evolves under full J2
+rather than mean-element secular rates, so the reference scenario
+changed: umbra samples 52 → 54, usable sky samples 37 → 39, median
+$|\mathcal A|$ 74.84 → 76.79 T m, maximum 148.77 → 158.30 T m,
+maximum aperture/boresight $K$ 1.266 → 1.313, correlation of $K$ with
+cutoff rigidity 0.894 → 0.907. The halo pins and the limb correlation
+did not move. The J2 orbit is slightly eccentric, so velocity is no
+longer exactly perpendicular to zenith; the pointing-geometry test
+uses point-mass gravity for that reason.
+
+**Simplification carried:** J2 acts about the GCRF $z$-axis, not the
+Earth's rotation axis of date. They differ by precession since J2000,
+about 0.4° in 2027. Inclination and node are measured from the GCRF
+equator.
+
+**Reversed if:** a study needs drag, third bodies or higher harmonics.
+Those enter as an acceleration function passed to `propagate`, not as
+a second propagator.
+
+---
+
+## D28 - One living pipeline; the ceiling screen runs on it
+
+**2026-09-23.** `jupyter/main_sequence.ipynb` (renamed from
+`darkness_alp_sim.ipynb`) is the one simulation pipeline, kept
+current. A variant is a copy named `main_sequence_vN.ipynb`, first
+cell saying what it tests, result in a dated note. The allowed-signal
+ceiling notebook is rebuilt on the library: propagated CCSDS orbit,
+Galactic Centre pointing, aperture-averaged $K$ and $D$ from the state
+table, umbra sky-visible exposure, and the phase-aware integral for the
+mass dependence; its `dataclass` inputs are plain constants. The two
+2026-09-17 session logs are deleted: they described a stdlib toolkit,
+FORMS routines and `circular_orbit`, none of which exist.
+
+**Result.** For the allowed benchmark ($g = 5.8\times10^{-11}$ GeV⁻¹,
+$f\,\mathrm{Br}/\tau = 6.3\times10^{-3}$ Gyr⁻¹, 7 keV parent) over the
+187-day science phase: Milky Way line $9\times10^{-3}$ counts,
+continuum $1.2\times10^{-3}$. The hand-set version gave $8\times10^{-5}$;
+the factor ~120 is almost all exposure (5.7 Ms simulated against an
+assumed 90 ks), with $\langle K\rangle = 1.5\times10^4$ T² m² and
+$\langle D\rangle = 1.3\times10^{23}$ GeV cm⁻². Still two orders below
+one count. Coherence halves at $m_a \approx 1.7\times10^{-5}$ eV.
+
+**Addendum 2026-09-24.** Figure 6 now integrates Block B's derived
+continuum (`source.continuum_intensity`) over 2–6 keV in place of the
+`[Yam20]` flux-limit scaling: continuum $5.9\times10^{-4}$ counts
+($0.48\times$ the value above); line and conclusion unchanged
+([[2026-09-24-ceiling-refresh]]).
+
+**Why:** one pipeline is one thing to keep correct, and a screen that
+runs on the simulated mission cannot drift from it.
+
+**Reversed if:** two studies need incompatible pipelines at the same
+time; then the second is a `_vN` copy, not a new structure.
+
+---
+
+## D29 - The ceiling screen becomes the ConOps picture book
+
+**2026-09-23.** `jupyter/DarkNESS_ALP_Allowed_Signal_Ceiling.ipynb` is
+replaced by `jupyter/conops.ipynb`: six figures for intuition and
+ConOps graphics, each drawn from the simulated mission with the
+main-sequence settings — the conversion path in the plane of the ray,
+the aperture view, one orbit in time, the day's ground track with modes
+and the weak-field region, the sky maps of continuum, line and
+confound, and the count ceiling with the mass reach. The figure code is
+`scripts/conops_figures.py`, importable by the notebook and the deck,
+with a CLI that renders the reference case. The ceiling calculation
+survives as figure 6; its D28 numbers do not change.
+
+**Why:** the screen answered one question (no allowed benchmark reaches
+a count) and the answer is now in the decision log. What the project
+needs from a notebook is the set of pictures that explain *how* the
+mission targets the objective, kept in step with the simulation.
+
+**Reversed if:** the viability gate needs the screen as a separate,
+auditable calculation again; then it returns as a `_vN` of the main
+sequence, not as a fourth notebook.
+
+---
+
+## D30 - Umbra-only is a trade, not a requirement
+
+**2026-09-24.** DarkNESS science is not restricted to umbra by its
+objectives. Umbra-only is one option in a trade against sunlit
+observing with the Sun kept out of the aperture. The ALP study carries
+both schedules and reports what each costs and buys; it does not assume
+either. The hard constraint is Sun keep-out. Supersedes the "baseline"
+framing of D5; the selectable rule (ALP-MA-14) stays.
+
+**Why:** the umbra rule came from the decaying-DM ConOps (solar
+background, thermal stability). The PI states it is a choice, and the
+ALP channel may or may not need it. Duty cycle roughly doubles without
+it, but sunlit frames bring solar X-ray, optical loading through the
+50 nm Al window, and a warmer MCM.
+
+**Reversed if:** the team fixes umbra-only for all science, or a
+sunlit-frame study shows the background or thermal penalty outweighs
+the extra exposure.
+
+## D31 - Viability gate: Revise
+
+**2026-09-24.** The gate in [[01-physics/detection-channel-derivation-contract]]
+is answered by the independent chain (Blocks A-D): no dark-matter
+benchmark allowed by the globular-cluster bound on $g$ and the Planck
+2018 bound on decaying dark matter produces a detectable DarkNESS
+signal. The 90 % limit on $\Theta = g^2 f/\tau$ sits $4\times10^5$ to
+$2\times10^6$ above the allowed ceiling over 187 days, statistical,
+before systematics; the gap does not close with exposure. The
+disposition is **Revise**: the study continues as a method result, not
+a search that can reach the allowed region.
+
+**Why:** the derivation produced results that stand on their own. The
+identifiability of an Earth-field ALP signal is spectral: a time-only
+analysis keeps 6 % of the information because the limb and cutoff
+confounders track the kernel, and the energy spectrum recovers 95 %.
+The narrow Milky Way line carries the sensitivity; the continuum alone
+is 37 times weaker. Both are design rules for any future Earth-field
+search and are publishable without a detection claim.
+
+**Reversed if:** a source model outside the $\chi\to aa$ hypothesis, or
+a revision of the decay or coupling bounds, raises the allowed ceiling
+by more than $10^5$ in $\Theta$.
+
+**Addendum 2026-09-25.** The gate re-derived by hand from the bounds,
+the halo column, the kernel envelope and the CXB gives
+$3.5\times10^5$, 10 % from the pipeline; every open item stacked at
+its best buys $10^2$–$10^3$ ([[2026-09-25-viability-by-hand]]).
+
+## D32 - A line of sight ends where the air turns opaque, at 150 km
+
+**2026-09-24.** `geometry.path_end_km` ends every ray at its first
+entry into the shell of radius $R_E + 150$ km (`end_alt_km`, default
+150), or at 10 $R_E$ if it never enters. The `occulted` flag keeps its
+meaning, a ray that hits the ground. A limb ray passing between 0 and
+150 km altitude is truncated at the shell without being flagged.
+
+**Why:** the converted photon must reach the detector through air. At
+sea level the absorption length of a 4 keV photon is about 10 cm and
+it scales inversely with pressure; above 150 km the pressure is below
+$10^{-10}$ atm and the length exceeds $10^6$ km (`[DH06]` §2). Field
+integrated below that altitude produces photons that are absorbed, so
+counting it overstates the kernel; on the reference day the ground end
+overstated occulted-frame $K$ by a median factor 2.7
+([[2026-09-24-occulted-ray-endpoint]]). The ALP itself is unaffected
+by the Earth, so nothing beyond the shell on the far side contributes
+either. Sky rays never enter the shell and are unchanged; the
+scenario-regression pins did not move.
+
+**What 150 km is not:** the boundary. The opaque altitude rises for
+rays far from nadir, whose slant path through each layer is longer,
+and for softer photons (photoabsorption roughly $E^{-3}$). Modelling
+that needs an atmospheric density profile above 100 km, which none of
+the four packages provides; the constant is tagged `ASSUME` and Q23
+stays open for the angle and energy dependence.
+
+**Reversed if:** the kernel-off control frames enter a fit with a
+template error budget below the difference between the constant-shell
+end and a slant-column end; then the density profile must be added.
+
+---
+
 ## Links
 
 - part of [[ALP]]
 - unresolved: [[open-questions]]
+
+---
+
+## D33 - The Earth's shadow is a cone, with a penumbra
+
+**2026-09-24.** `geometry.shadow(r_eci, sun_km)` replaces the
+cylindrical `in_umbra`. From the spacecraft it compares the apparent
+radius of the Sun ($R_\odot = 695\,700$ km, IAU 2015) with that of the
+Earth ($R_E = 6378.137$ km, equatorial) and their separation, and
+returns the visible fraction of the solar disk from the overlap of the
+two disks: 1 sunlit, 0 umbra, between them penumbra. The schedule
+conditions gain `penumbra`, and `sunlit` now means fully lit; the state
+table gains `penumbra` and `lit_fraction`. `frames.sun_position` gives
+the Sun in km, which the cone needs.
+
+**Why:** the cylinder has no penumbra and puts the shadow edge in the
+wrong place by a few seconds. The cone is the standard geometric model
+and costs nothing. In LEO a penumbra crossing takes 8 s or more, so
+the effect on duty cycle is small: the scenario-regression pins did not
+move. A science rule on `umbra` now excludes the penumbra, which is the
+safe side for stray sunlight.
+
+**What it is not:** the atmosphere. Refraction and absorption blur the
+edge by a further few seconds; no model here covers them.
+
+**Reversed if:** a thermal or power study needs the penumbra's
+brightness curve through the atmosphere; then the atmosphere enters as
+a correction to `lit_fraction`.

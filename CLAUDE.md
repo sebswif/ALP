@@ -23,13 +23,14 @@ Teaching codebase. The student audience is the primary constraint on every decis
 ## File / module layout
 - `src/darknessalp/<topic>/` subpackages, one topic per file, a few
   short functions each. Topics: `frames` (astropy time and reference
-  frames), `orbit` (analytic circular + J2, `propagate`), `dynamics`
-  (accelerations and torques, no integration), `kinematics` (body
+  frames), `orbit` (CCSDS elements, `propagate` point or J2, OEM),
+  `dynamics` (accelerations and torques, no integration), `kinematics` (body
   attitude, slews, rate-limited steering), `pointing` (target specs,
   modes = target + roll rule, condition → mode schedules, constraints),
   `field` (IGRF, dipole, magnetic coordinates), `geometry` (LOS
   integral, limb, umbra, FOV), `background` (CXB, GRXE, NXB proxy,
-  sources), `sim` (state table).
+  sources), `source` (halo column density, ALP source spectra), `sim`
+  (state table).
 - Each `__init__.py` re-exports its topic's public API; nothing else.
 - Functions take and return numpy arrays shaped `(N, 3)` or `(N,)`;
   positions in km, fields in tesla, angles in degrees, time as astropy
@@ -45,8 +46,18 @@ Teaching codebase. The student audience is the primary constraint on every decis
   the API reference regenerated.
 
 ## Where things go
-- `jupyter/` notebooks. `Notebook/` notes (.md, tracked). `docs/` references
-  (untracked). `data/` inputs. `outputs/` generated (untracked).
+- `jupyter/main_sequence.ipynb` is the one simulation pipeline, a living
+  document kept current. A variant that tests something different is a
+  copy named `main_sequence_vN.ipynb` (N = 1, 2, …) whose first cell says
+  what it tests; its result goes in a dated `Notebook/` note.
+- `jupyter/conops.ipynb` is the picture book: figures for intuition
+  and ConOps graphics, drawn from the same simulated mission; the
+  figure code lives in `scripts/conops_figures.py`. Other `jupyter/`
+  notebooks are analyses that run on the same library.
+  `Notebook/` notes (.md, tracked). `paper/` the manuscript (LaTeX,
+  tracked, written from `Notebook/03-sensitivity/result.md`). `docs/`
+  references (untracked).
+  `data/` inputs. `outputs/` generated (untracked).
 - New decisions and results summaries go in `Notebook/`, dated.
 
 ## Code length

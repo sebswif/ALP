@@ -17,7 +17,10 @@ BLURB = {
     "field": "The geomagnetic field and magnetic coordinates.",
     "geometry": "Lines of sight, the Earth disk, and the field of view.",
     "background": "Celestial and particle background models.",
+    "likelihood": "Fisher information and fits for the linear count model.",
+    "detector": "The skipper-CCD response: efficiency, resolution, counts.",
     "sim": "The per-sample record every run produces.",
+    "source": "Where the ALPs come from: the dark-matter halo column.",
 }
 
 
@@ -73,7 +76,7 @@ def main():
         lines.append("")
     lines += ["## Links", "", "- part of [[../ALP]]",
               "- why these exist: [[tooling]], [[pointing-system]]",
-              "- the run file: `jupyter/darkness_alp_sim.ipynb`", ""]
+              "- the pipeline: `jupyter/main_sequence.ipynb`", ""]
     with open(args.out, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
 

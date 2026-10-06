@@ -14,9 +14,9 @@ Blocking items first. Each carries what it blocks, so the cost of leaving it ope
 
 | # | Question | Blocks | Who can answer |
 |---|---|---|---|
-| Q14 | Does any benchmark allowed by current invisible-decay and $g_{a\gamma\gamma}$ constraints produce a detectable DarkNESS count rate? | Scientific motivation and permission to optimize the mission | Primary-literature synthesis plus source-to-count calculation |
+| Q14 | Does any benchmark allowed by current invisible-decay and $g_{a\gamma\gamma}$ constraints produce a detectable DarkNESS count rate? **Answered 2026-09-24: no.** The 90 % limit sits $4\times10^5$–$2\times10^6$ above $\Theta_{\max}$ over 187 days, statistical, before systematics — [[01-physics/block-d-claim]]; confirmed by hand at $3.5\times10^5$, with the open items bounded at $\le 10^3$ together — [[2026-09-25-viability-by-hand]]. Disposition: Revise, [[decisions]] D31 | Scientific motivation and permission to optimize the mission | Primary-literature synthesis plus source-to-count calculation |
 | Q15 | Can the Milky Way and extragalactic source normalizations be reproduced from a common derivation without a fitted scale? | Every mission sensitivity and coupling translation | Derivation review against Yamamoto and Dror et al. |
-| Q1 | Is the 20° FOV a **full cone** (half-angle 10°) or a half-angle? | Grasp, and therefore every sensitivity number, linearly | DarkNESS team / aperture drawing |
+| Q1 | Is the 20° FOV a **full cone** (half-angle 10°) or a half-angle? **Resolved 2026-09-24: full cone, half-angle 10°**; the 40° is the obstruction keep-out — [[00-baseline/skipper-ccd]] | Grasp, and therefore every sensitivity number, linearly | DarkNESS team / aperture drawing |
 | Q2 | Why does `LimitCalculation` use 8 cm² and 20 % when the paper says 12 cm² and ~50 % masking? | Reuse of the existing chain; a 1.5× area error propagates as 1.1× in $g$ | Original author of that chain |
 | Q3 | Which orbit is manifested — ISS-like, SSO noon/midnight, or SSO dawn/dusk? | Which of the three cases is primary; dawn/dusk breaks umbra-only observing | Launch manifest, mid-2026 |
 | Q4 | Which body axis does the payload aperture look along, and where are the radiator panels? | Whether a given science pointing is compatible with the radiator and Sun constraints. Earth-facing is not forbidden (D20) | Fig. 8 / mechanical ICD |
@@ -31,7 +31,7 @@ determine which result is the headline.
 
 | # | Question | Note |
 |---|---|---|
-| Q5 | Is umbra-only science actually required for the ALP analysis? | Inherited from thermal/solar-background needs of the primary science. If relaxable, duty cycle roughly doubles — and it is the difference between viable and not under dawn/dusk SSO. See [[decisions]] |
+| Q5 | Does the ALP analysis gain from sunlit observing (Sun kept out of the aperture), or does it also go umbra-only? | Not required by the mission (PI, 2026-09-24; D30); a trade. Costs of sunlit frames: solar X-ray, optical loading, warmer MCM. If relaxable, duty cycle roughly doubles — and it is the difference between viable and not under dawn/dusk SSO. See [[decisions]] |
 | Q6 | Slew rate, settle time, momentum management limits | Bounds how aggressive a scan law can be; an on/off pairing strategy needs slews within an orbit |
 | Q7 | Does NXB correlate with $(B_\perp L)^2$, and how strongly? | **The central systematic.** Both track geomagnetic position. Quantify before quoting a limit — [[03-sensitivity/method]] |
 | Q8 | Can the within-FOV brightness gradient be used as a discriminant? | Suzaku could not do this; DarkNESS's 20° cone might. Needs a statistics study |
@@ -46,6 +46,7 @@ determine which result is the headline.
 | Q20 | What source broadening is resolvable after the flight-like skipper-CCD redistribution? | Whether the Milky Way feature supplies meaningful spectral discrimination |
 | Q21 | Do science frames continue through Earth occultation, and can the night-Earth frame serve as the $K$-off / NXB control? | Whether the free on/off pair in [[02-mission-analysis/conops-physics-map]] exists; a requirement to hand the team (D20) |
 | Q22 | What is the Earth-limb / atmospheric X-ray background as a function of limb angle, day and night? | The maximum-$K$ directions are limb-grazing, so this covariate is correlated with signal by construction ([[02-mission-analysis/pointing-optimization]]) |
+| Q23 | How does the opaque-air altitude that ends a ray depend on nadir angle and energy? | Only the $K$-off control frames. A constant 150 km shell is applied (D32, 2026-09-24), removing a 2.7x overestimate; the residual angle and energy dependence needs an atmospheric density profile above 100 km — [[2026-09-24-occulted-ray-endpoint]] |
 
 ## Answered
 

@@ -1,0 +1,196 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[sort&compress,numbers]{natbib}
+
+\newcommand{\DarkNESS}{\textsc{DarkNESS}}
+\newcommand{\Th}{\Theta}
+\newcommand{\gag}{g_{a\gamma\gamma}}
+
+\title{A Skipper-CCD NanoSat search for geomagnetic conversion\\ of axion-like particles from dark matter decay}
+\author{[Author name]}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A long-lived dark matter parent decaying into two relativistic axion-like particles (ALPs) yields a narrow line at half the parent mass from the Milky Way halo and a redshifted continuum below it from the universe. An ALP crossing Earth's magnetic field converts to an X-ray photon with a probability set by the ALP--photon coupling and the transverse field integrated along the line of sight, so the converted brightness is the product of one source-and-coupling amplitude and a conversion kernel that orbit and pointing determine. We derive this channel from the interaction term to the counts in a \DarkNESS{}-class skipper-CCD NanoSat, check each step against closed forms and the published Suzaku analysis, and evaluate the search with a Poisson likelihood profiled over celestial, particle and Earth-limb backgrounds. On the reference observing schedule the 90\% statistical limit on the amplitude lies between four hundred thousand and two million times above the ceiling allowed by the stellar bound on the coupling and the Planck 2018 bound on decaying dark matter; no allowed model is detectable and the gap does not close with exposure. The analysis establishes instead how such a search must be built. The signal is identified by its energy spectrum, not its orbital modulation: a time-only fit keeps 6\% of the information because the limb angle and cutoff rigidity track the conversion kernel, while a time--energy fit keeps 95\%. The halo line carries the sensitivity; the continuum alone is 37 times weaker. The same machinery reproduces the statistical floor of the Suzaku analysis within a factor of two of its published coupling limit.
+\end{abstract}
+
+\noindent\textbf{Keywords:} axion-like particles; dark matter; Skipper-CCD; NanoSatellite; diffuse X-rays; mission design; geomagnetic field
+
+\section{Introduction}
+\label{sec:introduction}
+
+\DarkNESS{} is a CubeSat mission designed to operate Skipper-CCDs in low Earth orbit (LEO), demonstrating and maturing the detector technology in the space environment. Its published science program has two dark matter objectives: a search for low-energy ionization from strongly interacting sub-GeV dark matter and a search for X-rays from decaying dark matter in the Galactic halo \citep{alpine2025darkness}. The geomagnetic axion-like particle (ALP) search studied here is a proposed third science objective. It can be assessed using the \DarkNESS{} instrument and mission configuration, and the same measurement concept could be carried by a follow-on CubeSat with a related Skipper-CCD payload.
+
+The proposed objective tests a specific decay hypothesis. A long-lived dark matter parent decays into two relativistic ALPs, which cross Earth's magnetic field. A fraction convert into X-ray photons that a detector in LEO can record. The search requires a prediction for the photon spectrum and for the change in conversion probability about the satellite orbit. Those predictions determine whether the instrument and available observation windows can distinguish the signal from background counts.
+
+The proposed parent is non-relativistic and constitutes all or a specified fraction of the dark matter. Each daughter ALP carries approximately half the parent's rest energy. Parent masses of 2--20~keV therefore give ALP energies within the 1--10~keV analysis band. Decays in the Milky Way halo produce a narrow feature at that energy, with a brightness set by the dark matter column density along the viewing direction. ALPs from cosmological decays arrive at lower energies because their energies redshift during propagation, producing a continuum below the Galactic feature \citep{yamamoto2020alp,dror2021cosmic,cui2022cosmogenic}. The line and continuum share the same parent abundance, lifetime, and decay channel.
+
+The ALP--photon coupling permits conversion in Earth's magnetic field through the inverse Primakoff effect. In the weak-mixing regime, the conversion amplitude depends on the transverse field along the ALP's path and on the phase accumulated during propagation \citep{sikivie1983experimental,raffelt1988mixing}. A converted photon retains the incident ALP's energy and direction. The detector therefore receives a diffuse X-ray component whose spectrum follows the decay source and whose brightness changes with the field sampled along the accepted lines of sight. The orbit and pointing determine that field geometry.
+
+The \DarkNESS{} payload supplies a concrete reference for this measurement. Its four fully depleted Skipper-CCDs have a total geometric sensor area of 12~cm$^2$. A direct-view aperture admits X-rays over a $20^\circ$ field of view without X-ray optics or a coded mask \citep{alpine2025darkness}. The broad aperture collects photons from the diffuse converted component. Repeated charge measurements in a Skipper-CCD reduce read noise, while the detector's energy response determines how clearly a narrow Galactic feature can be distinguished from smoother backgrounds. The calculation folds the source and conversion probability through the aperture, X-ray absorption, energy redistribution, and usable exposure. These parameters define the reference case; a follow-on payload can be evaluated with its own measured response and observing constraints.
+
+The search tests whether the predicted spectrum changes with geomagnetic conversion strength across the observing window. Charged-particle backgrounds also vary with geomagnetic position, and Earth-limb emission changes with viewing geometry. Those variations can resemble part of the conversion time dependence. The energy spectrum supplies a second means of separation, particularly for the Galactic feature. For a specified decay spectrum, the measurement constrains the product of the ALP--photon coupling squared and the parent dark matter fraction divided by its lifetime. A coupling limit alone requires assumptions about the source abundance and decay rate.
+
+The Suzaku analysis by \citet{yamamoto2020alp} provides an observational precedent for this measurement. The study calculated the geomagnetic conversion strength at 60-second intervals for four blank fields and tested the dependence of the measured X-ray spectra on that strength. No positive dependence was found, and the analysis placed a 99\% upper limit on the ALP-origin surface brightness in the 2--6~keV band. The study also identified the shared orbital dependence of conversion strength and charged-particle background as a limitation of the search.
+
+This paper evaluates whether a \DarkNESS{}-class instrument can constrain the specified decay channel under stated source, detector, and background assumptions. The calculation carries the Galactic and cosmological ALP intensities through geomagnetic conversion to expected counts over a reference observing schedule. Fits to the time series and to the joint time and energy distribution measure how background covariance affects sensitivity. Comparison with adopted stellar and cosmological bounds establishes the reach of that schedule and identifies the measurement properties that control it. Section~\ref{sec:channel} defines the source and conversion models, and Section~\ref{sec:detector} describes the detector response. Sections~\ref{sec:likelihood} and~\ref{sec:results} present the statistical model and sensitivity results.
+
+\section{The science channel}
+\label{sec:channel}
+
+\subsection{Hypothesis}
+
+The parent $\chi$ has mass $m_\chi$ in the keV range, lifetime $\tau$, and a present-day share of the dark matter that, with the branching ratio to two ALPs folded in, we call $f$. It decays at rest into two ALPs of mass $m_a$ far below $m_\chi$, so each daughter carries the energy
+\begin{equation}
+E_0=\frac{m_\chi}{2}.
+\label{eq:e0}
+\end{equation}
+Two populations of parents contribute. Those in the Milky Way halo decay now, at their distance from the Sun, and their daughters arrive at $E_0$. Those throughout the universe decayed at every epoch since the parent was produced, and their daughters arrive redshifted. Both populations share the same $f$ and $\tau$, so the two components of the signal are one hypothesis with one normalisation. The lifetime is taken long compared with the age of the universe $t_U$; the case of a comparable lifetime is carried in the derivation and changes the shape of the continuum, not the structure of the argument.
+
+\subsection{The ALP source at Earth}
+
+The Milky Way component is a line. Along a line of sight $\hat n$ the halo column density is the integral of the dark matter density,
+\begin{equation}
+D(\hat n)=\int\rho_{\rm DM}\,ds ,
+\label{eq:column}
+\end{equation}
+and the parents in that column decay at rate $1/\tau$, two daughters per decay, into $4\pi$ steradians. The intensity per steradian is therefore
+\begin{equation}
+I_{\rm line}(\hat n)=\frac{f\,D(\hat n)}{2\pi\,m_\chi\,\tau}.
+\label{eq:line}
+\end{equation}
+The line is Doppler-broadened by the halo velocity dispersion of 165~km\,s$^{-1}$ \citep{evans2019shm}, a fractional width of $5.5\times10^{-4}$, or 2~eV at 7~keV.
+
+The extragalactic component is a continuum. Decays at scale factor $a$ emit daughters at $E_0$ that arrive at energy $aE_0$, diluted in number by the expansion and multiplied by the parents then alive. Counting those decays over cosmic time, with the redshift Jacobian and the survival of parents written in terms of today's share, gives the intensity per unit energy and steradian
+\begin{equation}
+\frac{dI}{dE}=\frac{c}{4\pi}\,\frac{2f\,\rho_{{\rm DM},0}}{m_\chi\,\tau}\,\frac{e^{[t_U-t(z)]/\tau}}{E\,H(z)}\qquad\text{for } E<E_0,\qquad 1+z=\frac{E_0}{E},
+\label{eq:continuum}
+\end{equation}
+and zero above $E_0$. Here $H(z)$ and $t(z)$ are the Hubble rate and cosmic time at the redshift from which a daughter now at $E$ was emitted, and $\rho_{{\rm DM},0}$ is today's mean dark matter density, 1.257~keV\,cm$^{-3}$ from Planck 2018 \citep{planck2018params}. The exponential counts the parents that were alive at emission relative to those alive now; it exceeds unity and reduces to one for a long lifetime. Writing the same $f$ in both components is what makes their ratio independent of convention; a derivation that places $f$ on the primordial density instead multiplies the line by $e^{-t_U/\tau}$, and the two agree only for a long lifetime. For a long lifetime Eq.~\eqref{eq:continuum} reduces to the power law with photon index $+1/2$ given by \citet{yamamoto2020alp}, apart from the sign of the cosmological-constant term in their cosmological factor, which the Friedmann equation fixes as positive.
+
+The halo is the Navarro--Frenk--White profile with scale radius 20~kpc, local density 0.4~GeV\,cm$^{-3}$ and solar radius 8.1~kpc \citep{navarro1996nfw}. Its column integrated over the whole sky is $2.67\times10^{23}$~GeV\,cm$^{-2}$\,sr, which matches the value quoted by \citet{dror2021cosmic} to 1\%. The Milky Way and extragalactic energy densities from Eqs.~\eqref{eq:line} and \eqref{eq:continuum} stand in ratio 2.3 at long lifetime, and their sum exceeds the energy density of the cosmic microwave background for lifetimes below ten thousand times $t_U$, as that work states.
+
+\subsection{Conversion in the geomagnetic field}
+
+The ALP couples to the electromagnetic field through the interaction term
+\begin{equation}
+\mathcal L_{\rm int}=-\tfrac14\,\gag\,a\,F_{\mu\nu}\tilde F^{\mu\nu}=\gag\,a\,\mathbf E\cdot\mathbf B ,
+\label{eq:lagrangian}
+\end{equation}
+which in a static background field turns an ALP wave into a photon wave and back \citep{raffelt1988mixing}. For a plane wave of energy $E$ travelling along a ray, with the field varying slowly over a wavelength, the ALP and the two photon polarisations transverse to the ray obey a first-order system whose off-diagonal terms are proportional to the transverse field components and whose diagonal terms carry the ALP mass and the plasma frequency \citep{marsh2022fourier}. To first order in the coupling the probability that an ALP arriving at the detector from direction $\hat n$ has converted along its path is
+\begin{equation}
+P_{a\to\gamma}=\left(\frac{\gag}{2}\right)^{2}K,\qquad
+K=\left|\int_{0}^{L}\mathbf B_{\perp}(s)\,e^{iqs}\,ds\right|^{2},\qquad
+q=\frac{m_a^{2}-\omega_{\rm pl}^{2}}{2E},
+\label{eq:conversion}
+\end{equation}
+where $\mathbf B_\perp$ is the vector component of the geomagnetic field perpendicular to the ray, $s$ the distance along the ray from the detector, and $\omega_{\rm pl}$ the plasma frequency. We call $K$ the conversion kernel. Three properties of Eq.~\eqref{eq:conversion} matter for what follows. The integral is of a vector: where the transverse field rotates along the ray the components partly cancel, and an integral of the field magnitude overstates the kernel. The sign of the phase and the choice of transverse basis do not affect the probability. And for a uniform field over a path $L$ the kernel is the familiar coherence form,
+\begin{equation}
+K=(B_\perp L)^{2}\,\frac{2\,(1-\cos qL)}{(qL)^{2}},
+\label{eq:coherence}
+\end{equation}
+which is flat while the phase is small and falls as the inverse square of the ALP mass beyond it. In SI units the probability for a coupling of $10^{-10}$~GeV$^{-1}$ and a kernel of $(100\ \mathrm{T\,m})^2$ is $2.45\times10^{-17}$, the coefficient found by \citet{yamamoto2020alp}.
+
+Each neglected term in Eq.~\eqref{eq:conversion} has a number for \DarkNESS{}. Weak mixing is exact at these probabilities. The ionospheric plasma frequency is below $3.7\times10^{-8}$~eV, so the plasma contribution to the phase over ten Earth radii at 1~keV is below $2\times10^{-4}$ and $q$ is the ALP-mass term alone. Vacuum birefringence at 30~$\mu$T is thirty orders below the phase, and Faraday rotation is negligible at keV energies. The field is the IGRF-14 internal field to degree 13; the external magnetosphere is a separate model choice.
+
+The geometry follows from the fact that the photon keeps the ALP's direction. Only field in front of the detector, along directions inside the aperture, contributes; this is the fact on which the solar-axion interpretation of a seasonal XMM--Newton modulation failed, since the Sun is a point source the telescope never views \citep{fraser2014xmm,roncadelli2015nosolar}, and it works in favour of a source that fills the sky. A ray is integrated outward from the satellite to ten Earth radii, where the dipole has fallen to a thousandth of its surface value, or to its first entry into the shell 150~km above the surface, below which the air is opaque to keV X-rays \citep{davoudiasl2006geomagnetic}. The kernel is averaged over the $20^\circ$ cone with a 19-ray equal-area quadrature.
+
+The implementation was checked against Eq.~\eqref{eq:coherence} to one part in $10^{5}$, against exact cancellation for a field that reverses at mid-path, against invariance under a joint rotation of field and ray, against convergence in step count on a limb-grazing ray, and against the range of $10^{4}$ to $10^{5}$~T$^2$\,m$^2$ that \citet{yamamoto2020alp} report for Suzaku's orbit.
+
+\subsection{The observable and the parameter of interest}
+
+The converted photon intensity is the ALP intensity times the conversion probability. Both source components scale with $f/\tau$ and the probability scales with the coupling squared, so every count in the search is proportional to one amplitude,
+\begin{equation}
+\Th=\gag^{2}\,\frac{f}{\tau},
+\label{eq:theta}
+\end{equation}
+times a template that the orbit, pointing, source model and detector fix. The data constrain $\Th$. A value of the coupling follows only for a declared $f/\tau$, and the converted brightness per unit kernel, for a declared spectrum, is the source-agnostic quantity beneath both. The search is therefore a correlation measurement: it asks for an X-ray component with the spectrum of Eqs.~\eqref{eq:line} and \eqref{eq:continuum} whose amplitude follows the kernel of Eq.~\eqref{eq:conversion} across the observing schedule.
+
+\section{The detector model}
+\label{sec:detector}
+
+The expected signal counts in a time sample and an energy bin are the converted intensity integrated over the aperture and the sample, passed through the detector. Writing $\Delta t_i$ for the length of sample $i$, $K_i$ for its cone-averaged kernel, and $R_j$ for the fraction of events at a true energy that are measured in bin $j$,
+\begin{equation}
+\mu^{\rm sig}_{ij}=\Delta t_i\left(\frac{\gag}{2}\right)^{2}K_i\,A_{\rm geo}\,\Omega\,f_{\rm live}\,\epsilon_{\rm sel}\int dE\,\frac{dI}{dE}(E)\,{\rm QE}(E)\,R_j(E),
+\label{eq:counts}
+\end{equation}
+with each factor separate and applied once. For the Milky Way line the source varies across the cone as well, and the cone average is of the product of column and kernel; on the reference schedule it equals the product of the averages to half a percent.
+
+The factors take the following values. The geometric area is 12~cm$^2$ and the $20^\circ$ full cone subtends 0.0955~sr, a grasp of 1.15~cm$^2$\,sr; the angular response is taken flat to the edge of the cone, which is an upper bound. The quantum efficiency is the transmission of the 50~nm aluminium entrance window times the absorption in 500~$\mu$m of fully depleted silicon, both from the NIST mass attenuation coefficients with their K edges: 0.984 at 1~keV, 0.951 just above the aluminium edge, 0.981 at 10~keV. The energy redistribution is Gaussian with a full width of 169~eV at 5.9~keV, the measured value \citep{alpine2026xray}, modelled as the Fano width and a 119~eV readout term added in quadrature; after three years in a Sun-synchronous orbit the width is 198~eV. Masking of charged-particle tracks leaves half the pixels live \citep{alpine2025darkness}. The event-grade retention is unity here and falls with radiation dose \citep{cervantesvergara2025proton,alpine2026xray}.
+
+Three checks pin the model. A sky of constant brightness returns brightness times grasp times band times exposure exactly when every efficiency is set to one. The redistribution conserves counts to one part in $10^{9}$. A narrow line keeps its total through the redistribution and spreads over more bins at 198~eV than at 169~eV. Two of the factors are not constants in flight: the live fraction and the grade retention vary with the particle rate, which follows the same geomagnetic position as the kernel, and in a fit they are nuisance terms with their own time dependence.
+
+\section{The measurement model and its identifiability}
+\label{sec:likelihood}
+
+Counts in each time sample and energy bin are Poisson about a mean that is linear in the amplitudes: the signal amplitude $\Th$ times its template, plus each background amplitude times its template,
+\begin{equation}
+\mu_{ij}=\Th\,k_{ij}+\sum_p\beta_p\,z_{pij}.
+\label{eq:model}
+\end{equation}
+The signal template $k_{ij}$ is the joint line-plus-continuum count model of Eq.~\eqref{eq:counts} per unit $\Th$. The information the data carry about $\Th$ once every background amplitude is fitted is read from the Fisher matrix of Eq.~\eqref{eq:model}: the profiled variance of the amplitude is the corresponding diagonal element of the inverse matrix, and the share of information that survives profiling is the ratio of the unprofiled to the profiled information. The 90\% one-sided limit is 1.28 times the profiled standard deviation, which is exact at the ten thousand counts per cell encountered here. Signals injected on a kernel-like template beside a constant and a confounding template are recovered with bias below fifteen percent of the standard deviation and with one-sigma coverage between 62\% and 74\% over four hundred Poisson realisations.
+
+The reference schedule is a 420~km, $51.6^\circ$ orbit pointing at the Galactic Centre in umbra at ten-minute cadence, 39 science samples and 6.5~h per day, scaled to the 187-day science phase. Four backgrounds enter. The cosmic X-ray background has the spectrum of \citet{deluca2004cxb} and a rate of 9.9 counts per second through the aperture. The particle background scales inversely with the geomagnetic cutoff rigidity, has a flat spectrum, and a mean level set equal to the cosmic background, which is an assumption. An Earth-limb term falls exponentially with the angle of the boresight from the limb on a $10^\circ$ scale and enters as a shape of unknown level. A Galactic ridge model, constant in time while the boresight is fixed, is a placeholder. Across the science samples the kernel is strongly correlated in time with the limb term, at 0.84, and anticorrelated with the particle proxy, at $-0.67$: the confounders move with the signal.
+
+\begin{table}[t]
+\centering
+\caption{Identifiability of the signal amplitude}
+\label{tab:identifiability}
+\begin{tabular}{lcccc}
+\toprule
+Template & \multicolumn{2}{c}{Time--energy fit} & \multicolumn{2}{c}{Time-only fit}\\
+ & information kept & 90\% limit on $\Th$ & information kept & error inflation\\
+\midrule
+line and continuum & 0.945 & $3.8\times10^{-18}$ & 0.061 & 15\\
+line only & 0.954 & $3.9\times10^{-18}$ & 0.061 & 16\\
+continuum only & 0.559 & $1.4\times10^{-16}$ & 0.061 & 4.4\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:identifiability} gives, for three choices of signal template, the share of information on $\Th$ that survives the four backgrounds and the resulting 90\% statistical limit in GeV$^{-2}$\,Gyr$^{-1}$ over 187 days, for a 7~keV parent and the cosmic-plus-particle background; the placeholder ridge model raises each limit by a factor of four and changes no information share by more than a tenth. Two fits are compared: one to the full table of time samples and energy bins, and one to the time series of total counts alone. The difference between them is the paper's central finding. When only the time series is fitted, 6\% of the information on the amplitude survives, because the limb and particle templates reproduce most of the kernel's time dependence; the error on the amplitude grows fifteenfold. When the energy bins are fitted as well, 95\% survives, because the signal's spectrum, and above all the line, is unlike the spectrum of anything that moves with the kernel. The joint and line-only rows are the same, and the continuum-only limit is thirty-seven times weaker: the line carries the search. And once the spectrum is in the fit the four backgrounds together remove only 5\% of the information, so the systematic budget of the method belongs to the shape of the particle-background template rather than to its correlation with the kernel.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{The allowed region is out of reach}
+
+The largest amplitude consistent with existing constraints follows from the globular-cluster bound on the coupling, $0.47\times10^{-10}$~GeV$^{-1}$ \citep{dolan2022globular}, and the Planck 2018 bound on the decay rate of a dark matter fraction, $4.0\times10^{-3}$~Gyr$^{-1}$ \citep{nygaard2021decaying,poulin2016decaying}; their product gives an allowed ceiling on $\Th$ of $8.8\times10^{-24}$~GeV$^{-2}$\,Gyr$^{-1}$. At that ceiling the reference day yields $2.4\times10^{-5}$ signal counts, of which $2.2\times10^{-5}$ are in the line, on between $4.5\times10^{5}$ and $6.4\times10^{6}$ background counts; the science phase yields $4.5\times10^{-3}$. The 90\% limits of Table~\ref{tab:identifiability} lie between four hundred thousand and two million times above the ceiling. Expressed as a coupling at the allowed decay rate, the limit is between three and six times $10^{-8}$~GeV$^{-1}$, against a bound of $0.47\times10^{-10}$. A limit set by counting improves as the square root of exposure and grasp, so closing the gap would require a factor of $10^{11}$ in either; no schedule, aperture or lifetime choice provides it. The result is statistical, on idealised templates, and is therefore a floor: the realistic limit is set by template error, as the Suzaku limit was.
+
+\subsection{Against the Suzaku analysis}
+
+The same machinery in Suzaku-like geometry, a 570~km orbit at $31^\circ$ with random blank-sky pointings, 12~Ms of exposure and a grasp of 0.026~cm$^2$\,sr, gives a kernel median of $1.4\times10^{4}$~T$^2$\,m$^2$ and a 90\% statistical floor on the coupling of $5.2\times10^{-8}$~GeV$^{-1}$ for a lifetime equal to the age of the universe, or $9\times10^{-8}$ in the three-sigma convention and the smaller grasp of \citet{yamamoto2020alp}. Their published coupling limit for a 7~keV parent is $2.1\times10^{-7}$, a factor of 2.3 above the floor. In converted brightness per unit kernel their tabulated 2--6~keV limit sits 85 times above the floor; how that table is normalised per unit kernel is not resolved here and is carried as a caveat, not a claim.
+
+\subsection{What the analysis establishes}
+
+Three statements carry the paper's contribution, each with a number and a test behind it. Identifiability is spectral: the energy spectrum, not the orbital modulation, separates the signal from what moves with it, and resolution with a spectral template is worth more than contrast in the kernel. The halo line carries the search, which favours a detector able to resolve a narrow feature at a known energy inside a wide field, and a pointing that maximises the kernel-weighted halo column rather than the kernel alone. The confounders cost little once modelled with the spectrum, so the systematic budget of an Earth-field search belongs to the particle-background template shape.
+
+\section{Discussion}
+\label{sec:discussion}
+
+The placeholder ridge model and the assumed particle level move the limit by a factor of four and no conclusion. The 150~km end of a ray is a constant where the true opaque altitude rises with the angle from nadir and falls with energy; it affects only the frames that view the night Earth, which serve as a kernel-off control. The live fraction and grade retention, constants here, become time-dependent nuisance terms in a real fit. The front-side dead layer of the sensors and the angular response of the aperture are the largest declared unknowns; both act at 1--2~keV, where 40\% of the continuum counts fall. None of these reaches the five orders of magnitude in $\Th$ that the result would need to change; only a source outside the two-ALP decay hypothesis, or a revision of the coupling or decay bounds, does.
+
+Magnetic-field uncertainty is part of the signal model rather than a background \citep{matthews2022magneticmodels}. Here the internal field is used alone; the external magnetosphere is a separate model choice that the method carries as a nuisance realisation. Lobster-eye optics remain a secondary trade: focusing does not by itself help a diffuse signal, and the result above says that what would help is resolution at the line, not grasp.
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+A \DarkNESS{}-class NanoSat cannot reach any two-ALP decay model allowed by current bounds through geomagnetic conversion, by five to six orders of magnitude in the signal amplitude, and no observing choice changes that. What it can contribute is the anatomy of the measurement: spectral identification, the halo line as carrier, and confounders that cost 5\% of the information once the spectrum is used. Those three statements are the design rules for any future Earth-field ALP search.
+
+\section*{Data and code availability}
+
+The analysis library, the state tables, the derivation notes with their checks, and the tests that pin every number in this paper are in the project repository. Archival identifiers will be added before submission.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references,alp_dark_matter_30_new_references}
+
+\end{document}

@@ -5,18 +5,26 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from darknessalp import orbit, pointing, sim
+from darknessalp.constants import R_EQUATOR_KM
 
 
 class TestStateTable(unittest.TestCase):
     def test_one_orbit_table(self):
         t = np.arange(0, 5600, 600.0)
-        r, _ = orbit.circular_orbit(t, 420.0, 51.6)
+        r0, v0 = orbit.elements_to_state(R_EQUATOR_KM + 420.0, 0.0, 51.6,
+                                         0.0, 0.0, 0.0)
+        r, _ = orbit.propagate(r0, v0, t)
         n = np.tile(pointing.sky_target("gc"), (len(t), 1))
         table = sim.state_table("2027-05-01T00:00:00", t, r, n, lmax=1)
         self.assertEqual(len(table["amp_tm"]), len(t))
         self.assertTrue(np.all(table["alt_km"] > 400))
         self.assertTrue(np.all(np.abs(table["lat_deg"]) <= 52))
         self.assertTrue(np.all(table["amp_tm"] >= 0))
+        self.assertTrue(np.all(table["k_fov_t2m2"] > 0))
+        self.assertTrue(np.all(table["d_fov_gevcm2"] > 1e22))
+        self.assertTrue(np.all(table["dk_fov_gevcm2_t2m2"] > 0))
+        np.testing.assert_array_less(-1e-12, table["fov_occ_frac"])
+        np.testing.assert_array_less(table["fov_occ_frac"], 1 + 1e-12)
         occulted = table["occulted"]
         self.assertTrue(np.all(table["limb_deg"][occulted] < 0))
         with TemporaryDirectory() as tmp:
