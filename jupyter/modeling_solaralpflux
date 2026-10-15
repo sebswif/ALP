@@ -1,0 +1,35 @@
+import numpy as np
+
+# Standard empirical parametrization of solar Primakoff axion flux at Earth
+# (CAST Collaboration / Raffelt; e.g. JCAP 0704 (2007) 010)
+NORM = 6.02e10    # cm^-2 s^-1 keV^-1 at benchmark g_ay = 1e-10 GeV^-1
+ALPHA = 2.481     # Power-law spectral index
+T_NORM = 1.205    # Exponential cutoff energy in keV
+
+
+def solar_axion_flux_primakoff(e_kev, g_ay):
+    """Return differential solar Primakoff axion flux in cm^-2 s^-1 keV^-1."""
+    e = np.asarray(e_kev, dtype=float)
+    g10 = g_ay / 1e-10
+
+    # Differential flux formula: NORM * (g_ay / 1e-10)^2 * E^alpha * exp(-E / T_norm)
+    flux = np.where(
+        e > 0.0,
+        NORM * (g10**2) * (e**ALPHA) * np.exp(-e / T_NORM),
+        0.0,
+    )
+
+    if np.ndim(e_kev) == 0:
+        return float(flux)
+    return flux
+
+
+if __name__ == "__main__":
+    # Define an energy range from 0.5 keV to 20 keV (X-ray regime)
+    energies = np.linspace(0.5, 20.0, 100)
+    coupling = 1e-10  # GeV^-1
+
+    flux_spectrum = solar_axion_flux_primakoff(energies, coupling)
+
+    flux_5kev = solar_axion_flux_primakoff(5.0, coupling)
+    print(f"At E = 5.0 keV, Flux = {flux_5kev:.3e} cm^-2 s^-1 keV^-1")
