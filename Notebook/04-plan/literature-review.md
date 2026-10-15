@@ -167,7 +167,8 @@ Fit the time-energy correlation model, profile the background components, perfor
   bright-source catalogue for contamination flags (Sco X-1 is 24° from
   the GC).
 - **Primordial cosmic ALP background** (Conlon & Marsh) is a second
-  isotropic template for the pointing-free channel.
+  isotropic template for the pointing-free channel. Checked and
+  retired: [[../decisions]] D26.
 
 ## Immediate research gaps
 
@@ -191,6 +192,8 @@ The first implementation should be a validation-and-state-table package, not the
 This package tests the paper's central premise with minimal dependence on uncertain background amplitudes.
 
 ## Core sources
+
+Canonical keyed list: [[../references]].
 
 - [Alpine et al. 2025, DarkNESS mission](https://doi.org/10.1016/j.asr.2025.07.070)
 - [Alpine et al. 2026, skipper-CCD X-ray response after proton irradiation](https://arxiv.org/abs/2602.02461)

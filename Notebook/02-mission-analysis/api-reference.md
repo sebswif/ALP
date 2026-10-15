@@ -34,6 +34,20 @@ Celestial and particle background models.
 | `source_vectors()` | Return (names, (N, 3) unit vectors, mCrab array). |
 | `sources_in_cone(n_hat, half_angle_deg=10.0)` | Return [(name, separation_deg, mCrab)] inside the cone. |
 
+## `detector`
+
+The skipper-CCD response: efficiency, resolution, counts.
+
+| Call | Returns |
+|---|---|
+| `expected_counts(e_kev, intensity, e_edges_kev, prob, dt_s, qe=None, area_cm2=12.0, half_angle_deg=10.0, live=0.5, select=1.0, fwhm_kev=None)` | Return counts (samples, bins) for an ALP intensity per keV per sr. |
+| `grasp_cm2sr(area_cm2=12.0, half_angle_deg=10.0)` | Return geometric area times the cone solid angle. |
+| `quantum_efficiency(e_kev, al_nm=50.0, thickness_um=500.0, dead_um=0.0)` | Return window transmission times silicon absorption. |
+| `redistribution(e_kev, e_edges_kev, fwhm_kev=None)` | Return R[E, j]: the fraction of events at E measured in bin j. |
+| `resolution_fwhm_kev(e_kev, noise_fwhm_kev=0.119, fano=0.118, w_ev=3.72)` | Return FWHM in keV: Fano broadening and readout noise in quadrature. |
+| `silicon_absorption(e_kev, thickness_um=500.0, dead_um=0.0)` | Return the fraction absorbed in the active silicon. |
+| `window_transmission(e_kev, al_nm=50.0)` | Return the fraction passing an aluminium entrance window. |
+
 ## `dynamics`
 
 Accelerations and torques. Models only, no integration.
@@ -70,11 +84,14 @@ Time and reference frames. astropy does the work.
 | `decimal_year(time)` | Return the decimal year of a Time (scalar or array). |
 | `ecef_to_eci(v_ecef, time)` | Return (N, 3) ECI vectors for (N, 3) ECEF vectors at Time(s). |
 | `eci_to_ecef(v_eci, time)` | Return (N, 3) ECEF vectors for (N, 3) ECI vectors at Time(s). |
+| `eme2000_to_gcrf(v)` | Return (N, 3) vectors on GCRF axes for (N, 3) EME2000 vectors. |
 | `galactic_vector(l_deg, b_deg)` | Return unit vectors toward Galactic (l, b) in degrees. |
+| `gcrf_to_eme2000(v)` | Return (N, 3) vectors on EME2000 axes for (N, 3) GCRF vectors. |
 | `radec_vector(ra_deg, dec_deg)` | Return unit vectors toward J2000 (ra, dec) in degrees. |
 | `spherical(r_ecef)` | Return geocentric (lat_deg, lon_deg, r_km) arrays of ECEF points. |
+| `sun_position(time)` | Return (N, 3) geocentric Sun positions in km at Time(s). |
 | `sun_vector(time)` | Return (N, 3) unit vectors toward the Sun at Time(s). |
-| `times(epoch, t_s)` | Return astropy Time for seconds after a datetime or ISO epoch. |
+| `times(epoch, t_s)` | Return Time for seconds after an ISO, Julian-date or Time epoch. |
 | `to_galactic(v)` | Return Galactic (l_deg, b_deg) of (N, 3) ICRS unit vectors. |
 | `unit_vector(coord)` | Return (N, 3) ICRS unit vectors of a SkyCoord (ICRS ~ GCRS here). |
 
@@ -85,15 +102,18 @@ Lines of sight, the Earth disk, and the field of view.
 | Call | Returns |
 |---|---|
 | `cone_directions(n_hat, half_angle_deg=10.0, rings=3)` | Return (M, 3) directions and equal-area weights sampling the cone. |
+| `conversion_probability(amplitude_tm, g_gev)` | Return P(a -> gamma) = (g |A| / 2)^2 for |A| in T m, g in GeV^-1. |
 | `earth_angular_radius_deg(r_eci)` | Return the angular radius of the Earth disk from the spacecraft. |
 | `fov_axes(n_hat, up_hint=(0.0, 0.0, 1.0))` | Return (x_hat, y_hat) across the boresight; y_hat toward up_hint. |
-| `in_umbra(r_eci, sun_hats)` | Return a bool per row: spacecraft inside the cylindrical shadow. |
+| `fov_field_integral(r_eci, n_hat, time, coeffs, lmax=13, q_per_m=0.0, half_angle_deg=10.0, rings=3)` | Return FOV-mean |A|^2 in T^2 m^2, per-ray |A|; ray 0 = boresight. |
 | `limb_angle(r_eci, n_hats)` | Return degrees from boresight(s) to the limb; negative = at Earth. |
 | `limb_directions(r_eci, n_points=180)` | Return (n_points, 3) unit vectors along the limb ring. |
-| `los_field_integral(r_eci, n_hats, time, coeffs, lmax=13, q_per_m=0.0, l_max_re=10.0, n_steps=200)` | Return |A| in T m per ray, with running totals and occultation. |
+| `los_field_integral(r_eci, n_hats, time, coeffs, lmax=13, q_per_m=0.0, l_max_re=10.0, n_steps=200, end_alt_km=150.0)` | Return |A| in T m per ray, with running totals and occultation. |
 | `offset_direction(x_deg, y_deg, n_hat, x_hat, y_hat)` | Return unit vectors at angular offsets (x, y) from the boresight. |
-| `path_end_km(r_eci, n_hats, l_max_re=10.0)` | Return (s_end, occulted) per ray: Earth surface or the outer sphere. |
+| `path_end_km(r_eci, n_hats, l_max_re=10.0, end_alt_km=150.0)` | Return (s_end, occulted): the opaque-air shell or the outer sphere. |
 | `project(v, n_hat, x_hat, y_hat)` | Return (x_deg, y_deg) offsets; radius is the true angle from centre. |
+| `shadow(r_eci, sun_km)` | Return {lit_fraction, sunlit, penumbra, umbra} arrays per row. |
+| `transverse_amplitude(b, n_hats, s_m, q_per_m=0.0)` | Return running |int B_perp e^{iqs} ds| in T m, shape (R, S). |
 
 ## `kinematics`
 
@@ -108,15 +128,29 @@ Body attitude, slews, and rate-limited steering.
 | `slew_time_s(angle_deg, rate_deg_s=1.5, settle_s=60.0)` | Return time to slew at a fixed rate plus settle (ASSUME 1.5 deg/s). |
 | `steer(desired, t_s, rate_deg_s=1.5, settle_deg=0.1, start=None, mode_index=None)` | Return (commanded Rotations, error_deg, slewing) at a fixed rate. |
 
+## `likelihood`
+
+Fisher information and fits for the linear count model.
+
+| Call | Returns |
+|---|---|
+| `fisher(templates, mu)` | Return I_ab = sum over cells of t_a t_b / mu. |
+| `fit_amplitudes(counts, templates, mu)` | Return least-squares amplitudes with weights 1/mu. |
+| `information_fraction(signal, nuisance, mu)` | Return the share of the signal's information that survives profiling. |
+| `profiled_sigma(signal, nuisance, mu)` | Return the error on the signal amplitude after profiling nuisance. |
+| `upper_limit(sigma, cl=0.9)` | Return the one-sided Gaussian upper limit on a null amplitude. |
+
 ## `orbit`
 
 Where the spacecraft is.
 
 | Call | Returns |
 |---|---|
-| `circular_orbit(t_s, alt_km, inc_deg, raan_deg=0.0, u0_deg=0.0)` | Return ECI position (N, 3) km and velocity (N, 3) km/s. |
-| `period_s(alt_km)` | Return the circular orbital period in seconds. |
-| `propagate(r0, v0, t_s, acceleration=two_body_j2)` | Return r (N, 3) and v (N, 3) at times t_s from an initial state. |
+| `elements_to_state(a_km, e, inc_deg, raan_deg, argp_deg, nu_deg, mu=398600.4418)` | Return position (N, 3) km and velocity (N, 3) km/s from elements. |
+| `period_s(a_km, mu=398600.4418)` | Return the two-body orbital period in seconds. |
+| `propagate(r0, v0, t_s, gravity='j2')` | Return r (N, 3) km and v (N, 3) km/s at t_s >= 0 s after the epoch. |
+| `read_oem(path)` | Return (Time, r (N, 3) km, v (N, 3) km/s) on GCRF axes from an OEM. |
+| `write_oem(path, time, r, v, ref_frame='GCRF', object_name='DARKNESS')` | Write GCRF states (km, km/s) as a CCSDS OEM on ref_frame axes. |
 
 ## `pointing`
 
@@ -128,7 +162,7 @@ What to look at, and when.
 | `GALACTIC` | constant: {apex, gc} |
 | `attitudes(modes, mode_index, time, r_eci, v_eci, b_eci=None)` | Return Rotation(s) following mode_index (N,) into a list of modes. |
 | `body_direction(name, time, r_eci)` | Return (N, 3) directions to a solar-system body from the spacecraft. |
-| `conditions(time, r_eci, extra=None)` | Return {name: bool (N,)} with umbra, sunlit, always, plus extra. |
+| `conditions(time, r_eci, extra=None)` | Return {name: bool (N,)}: sunlit, penumbra, umbra, always, extra. |
 | `desired_attitude(m, time, r_eci, v_eci, b_eci=None)` | Return body->ECI Rotation(s) realising a mode at each sample. |
 | `feasible(r_eci, n_hats, sun_hat, sun_min=90.0, limb_min=0.0)` | Return a bool per boresight: outside the Sun and limb keep-outs. |
 | `mode(primary, roll='anti_earth')` | Return a mode dict; roll: anti_earth, anti_sun, or a target spec. |
@@ -143,11 +177,25 @@ The per-sample record every run produces.
 
 | Call | Returns |
 |---|---|
-| `state_table(epoch, t_s, r_eci, boresights, lmax=13, q_per_m=0.0)` | Return a dict of arrays, one entry per sample, for a pointing law. |
+| `state_table(epoch, t_s, r_eci, boresights, lmax=13, q_per_m=0.0, half_angle_deg=10.0)` | Return a dict of arrays, one entry per sample, for a pointing law. |
 | `to_csv(table, path)` | Write a state table to CSV with a header row. |
+
+## `source`
+
+Where the ALPs come from: the dark-matter halo column.
+
+| Call | Returns |
+|---|---|
+| `column_density(l_deg, b_deg, r_max_kpc=200.0, **nfw)` | Return D = int rho ds in GeV cm^-2 toward Galactic (l, b), per row. |
+| `continuum_intensity(e_kev, m_kev, share, tau_gyr, cosmo=FlatLambdaCDM(name='Planck18', H0=<Quantity 67.66 km / (Mpc s)>, Om0=0.30966, Tcmb0=<Quantity 2.7255 K>, Neff=3.046, m_nu=<Quantity [0.  , 0.  , 0.06] eV>, Ob0=0.04897))` | Return the redshifted chi -> aa intensity, cm^-2 s^-1 sr^-1 keV^-1. |
+| `dm_density_kev_cm3(cosmo=FlatLambdaCDM(name='Planck18', H0=<Quantity 67.66 km / (Mpc s)>, Om0=0.30966, Tcmb0=<Quantity 2.7255 K>, Neff=3.046, m_nu=<Quantity [0.  , 0.  , 0.06] eV>, Ob0=0.04897))` | Return today's mean dark-matter density in keV cm^-3. |
+| `line_intensity(d_gevcm2, m_kev, share, tau_gyr)` | Return the Milky Way chi -> aa line intensity, cm^-2 s^-1 sr^-1. |
+| `line_sigma_kev(m_kev, sigma_v_kms=165.0)` | Return the halo Doppler width (one sigma) of the line at m/2, keV. |
+| `nfw_density(r_kpc, rho_s=0.31979205000000005, r_s_kpc=20.0, r_core_kpc=0.1)` | Return the NFW density in GeV cm^-3 at Galactocentric radius r_kpc. |
+| `sky_column(step_deg=2.0, **nfw)` | Return the full-sky integral of D in GeV cm^-2 sr on an (l, b) grid. |
 
 ## Links
 
 - part of [[../ALP]]
 - why these exist: [[tooling]], [[pointing-system]]
-- the run file: `jupyter/darkness_alp_sim.ipynb`
+- the pipeline: `jupyter/main_sequence.ipynb`

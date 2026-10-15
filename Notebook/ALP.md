@@ -16,6 +16,8 @@ Current work package: [[04-plan/next-step]].
 
 Journal framing: [[04-plan/journal-contribution-scope]].
 
+Requirements: [[04-plan/alp-baseline-requirements]].
+
 > Home note for a DarkNESS case study of geomagnetic conversion of relativistic ALPs produced by
 > dark-matter decay, benchmarked against Yamamoto et al. 2020.
 
@@ -54,11 +56,19 @@ line. See [[decisions]] D1.
 ## Baseline
 
 - [[00-baseline/darkness-parameters|Parameters]] — instrument, platform, environment, with provenance tags
-- [[00-baseline/darkness-conops|ConOps as constraints]] — umbra-only science, two-axis attitude, the eclipse trade
+- [[00-baseline/skipper-ccd|Skipper-CCD sheet]] — area, FOV, QE, resolution, selection, and where each enters the count model
+- [[00-baseline/darkness-conops|ConOps as constraints]] — umbra-only vs sunlit trade, two-axis attitude, the eclipse trade
 
 ## Physics
 
 - [[01-physics/alp-signal-chain|Signal chain]] — linked source components, conversion probability, and counts model
+- [[01-physics/derivation-sources|Derivation sources]] — origin equations, notation map, DarkNESS inputs and checks per block
+- [[01-physics/block-a-conversion|Block A: conversion]] — the amplitude from the mixing equations, validity, ray geometry, units, six checks
+- [[01-physics/block-b-source|Block B: source]] — line and continuum from one count, today's share, DMR and Yamamoto checks
+- [[01-physics/block-c-counts|Block C: counts]] — the count integral with every detector factor separate; grasp and conservation checks; reference-day worked example
+- [[03-sensitivity/result|The channel result]] — the paper's core claim: gate answered, what the analysis establishes, claim boundary
+- [[01-physics/block-d-claim|Block D: likelihood and claim]] — the linear count model, profiled information, the result hierarchy, and the viability gate with numbers
+- [[references|References]] — the one keyed bibliography
 - [[01-physics/detection-channel-derivation-contract|Derivation contract]] — equations, assumptions, tests, and review gate
 - [[01-physics/coherence-and-mass-reach|Coherence and mass reach]] — why the mass axis is not a design variable
 - [[01-physics/sensitivity-scaling|Sensitivity scaling]] — grasp, exposure, geometry, and covariance
