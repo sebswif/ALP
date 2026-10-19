@@ -45,3 +45,4 @@ visualization. Older `spacecraft_*` outputs, if present, are historical and
 are not regenerated or displayed by the notebook.
 
 Model reference: https://www.ncei.noaa.gov/products/international-geomagnetic-reference-field
+
